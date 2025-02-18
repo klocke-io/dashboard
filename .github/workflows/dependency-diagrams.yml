@@ -47,6 +47,5 @@ jobs:
           add: './backend/diagram'
           fetch: true
           message: 'Commit from GitHub Actions (dependency-diagrams.yml)'
-          pull: '--rebase --autostash ...'
           pathspec_error_handling: 'exitAtEnd'
 
