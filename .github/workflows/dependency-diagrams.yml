@@ -19,13 +19,6 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
 
-      - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
-        with:
-          add: 'backend/diagram'
-          fetch: true
-          message: 'Commit from GitHub Actions (dependency-diagrams.yml)'
-          pull: '--rebase --autostash ...'
-
       - name: Enable Corepack # Enable yarn version 4
         run: corepack enable
 
@@ -44,3 +37,16 @@ jobs:
       - name: Generate dependency diagrams
         run: yarn generate-dependency-diagrams
         working-directory: ./backend
+
+      - name: ls
+        working-directory: ./backend
+        run: ls -lisa
+
+      - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
+        working-directory: ./backend
+        with:
+          add: 'diagram'
+          fetch: true
+          message: 'Commit from GitHub Actions (dependency-diagrams.yml)'
+          pull: '--rebase --autostash ...'
+          pathspec_error_handling: 'exitAtEnd'
