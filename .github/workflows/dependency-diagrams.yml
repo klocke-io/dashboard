@@ -1,0 +1,51 @@
+name: Generate Dependency Diagrams
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+  pull_request:
+    paths:
+      - 'backend/**'
+jobs:
+  generate-diagrams:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true  # Ensures the default GITHUB_TOKEN can push commits
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Enable Corepack # Enable yarn version 4
+        run: corepack enable
+
+      - name: Setup Graphviz
+        uses: ts-graphviz/setup-graphviz@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install backend dependencies
+        run: yarn install
+        working-directory: ./backend
+
+      - name: Generate dependency diagrams
+        run: yarn generate-dependency-diagrams
+        working-directory: ./backend
+
+      - name: ls
+        run: ls -lisa
+        working-directory: ./backend
+
+      - uses: EndBug/add-and-commit@v9 # You can change this to use a specific version.
+        with:
+          add: './backend/diagram'
+          fetch: true
+          message: 'Commit from GitHub Actions (dependency-diagrams.yml)'
+          pathspec_error_handling: 'exitAtEnd'
+
