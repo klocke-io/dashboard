@@ -15,6 +15,16 @@ jobs:
         with:
           persist-credentials: true  # Ensures the default GITHUB_TOKEN can push commits
 
+      - name: Ensure branch is checked out
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BRANCH="${{ github.head_ref }}"
+          else
+            BRANCH="${{ github.ref_name }}"
+          fi
+          echo "Switching to branch: $BRANCH"
+          git checkout "$BRANCH"
+
       - name: Enable Corepack # Enable yarn version 4
         run: corepack enable
 
