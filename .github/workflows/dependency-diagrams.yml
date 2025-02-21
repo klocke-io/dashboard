@@ -2,14 +2,10 @@ name: Generate Dependency Diagrams
 
 on:
   push:
-    paths:
-      - 'backend/**'
     branches-ignore:
       - 'master'
       - 'hotfix-*'
   pull_request:
-    paths:
-      - 'backend/**'
     branches-ignore:
       - 'master'
       - 'hotfix-*'
@@ -38,15 +34,13 @@ jobs:
 
       - name: Install backend dependencies
         run: yarn install
-        working-directory: ./backend
 
       - name: Generate dependency diagrams
-        run: yarn generate-dependency-diagrams
-        working-directory: ./backend
+        run: yarn generate-backend-dependency-diagrams
 
       - uses: EndBug/add-and-commit@a94899bca583c204427a224a7af87c02f9b325d5 # v9.1.4
         with:
-          add: './backend/diagram'
+          add: './diagram'
           fetch: true
           message: 'Commit from GitHub Actions (dependency-diagrams.yml)'
           pathspec_error_handling: 'exitAtEnd'
