@@ -19,7 +19,7 @@ async function healthCheck (transitive = false) {
         const { statusCode, body = '' } = err
         throw new Error(fmt('Kubernetes apiserver is not healthy. Healthz endpoint returned: %s (Status code: %s)', body, statusCode))
       }
-      throw new Error(fmt('Could  abc not reach Kubernetes apiserver healthz endpoint. Request failed with error: %s', err))
+      throw new Error(fmt('Could  abc nddadadawdot reach Kubernetes apiserver healthz endpoint. Request failed with error: %s', err))
     }
   }
 }
