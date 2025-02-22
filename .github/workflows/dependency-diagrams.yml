@@ -5,16 +5,10 @@ on:
     paths:
       - 'backend/**'
       - 'packages/**'
-    branches-ignore:
-      - 'master'
-      - 'hotfix-*'
   pull_request:
     paths:
       - 'backend/**'
       - 'packages/**'
-    branches-ignore:
-      - 'master'
-      - 'hotfix-*'
 jobs:
   generate-diagrams:
     runs-on: ubuntu-latest
