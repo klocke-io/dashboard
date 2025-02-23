@@ -5,29 +5,19 @@ on:
     paths:
       - 'backend/**'
       - 'packages/**'
-  pull_request:
-    paths:
-      - 'backend/**'
-      - 'packages/**'
+    branches-ignore:
+      - 'master'
+      - 'hotfix-*'
+
 jobs:
   generate-diagrams:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository (for pull_request event)
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          persist-credentials: true
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Checkout repository (for push event)
-        if: ${{ github.event_name == 'push' }}
+      - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: true
-          repository: ${{ github.repository }}
-          ref: ${{ github.ref }}
 
       - name: Enable Corepack # Enable yarn version 4
         run: corepack enable
