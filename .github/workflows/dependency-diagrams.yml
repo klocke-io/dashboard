@@ -36,59 +36,56 @@ jobs:
       - name: Generate dependency diagrams
         run: yarn generate-all-dependency-diagrams
 
-      - name: Detect diagram updates
-        id: check_diagram_changes
+      - name: Commit updated diagrams via GitHub API
         run: |
-          echo "🔍 Checking for changes in 'diagrams/' directory..."
-          CHANGED=$(git status --porcelain diagrams/)
-          if [ -n "$CHANGED" ]; then
-            echo "✅ Changes detected:"
-            echo "$CHANGED"
-            echo "changes_detected=true" >> $GITHUB_ENV
-          else
-            echo "✅ No changes detected in 'diagrams/'"
-            echo "changes_detected=false" >> $GITHUB_ENV
+          pwd
+          echo "Checking for changes in 'diagram/' directory..."
+          CHANGED=$(git status --porcelain diagram/)
+          echo "Git status output:"
+          echo "$CHANGED"
+
+          if [ -z "$CHANGED" ]; then
+            echo "No changes detected. Exiting."
+            exit 0
           fi
 
-      - name: Commit updated diagrams via GitHub API
-        if: env.changes_detected == 'true'
-        run: |
-          echo "🚀 Starting to commit changed diagrams..."
+          echo "Changes detected. Starting to commit changed diagrams..."
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-          echo "🔀 Target branch: $BRANCH_NAME"
-          
-          FILES_CHANGED=$(git status --porcelain diagrams/ | awk '{print $2}')
-          echo "📄 Files to commit:"
+          echo "Target branch: $BRANCH_NAME"
+
+          FILES_CHANGED=$(echo "$CHANGED" | awk '{print $2}')
+          echo "Files to commit:"
           echo "$FILES_CHANGED"
 
           for file in $FILES_CHANGED; do
-            echo "📝 Preparing to commit: $file"
+            echo "Preparing to commit: $file"
             if [ ! -f "$file" ]; then
-              echo "⚠️ Skipped: $file does not exist."
+              echo "Skipped: $file does not exist."
               continue
             fi
 
             CONTENT=$(base64 -w 0 "$file")
             FILENAME=$(basename "$file")
 
-            echo "🔍 Checking if file already exists in the repo..."
+            echo "Checking if file already exists in the repository..."
             SHA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
               https://api.github.com/repos/${{ github.repository }}/contents/$file?ref=$BRANCH_NAME \
               | jq -r .sha)
 
             if [ "$SHA" == "null" ]; then
-              echo "ℹ️ No existing file found. Creating new."
+              echo "No existing file found. Will create new."
               SHA=""
             else
-              echo "🔁 Updating existing file with SHA: $SHA"
+              echo "Updating existing file with SHA: $SHA"
             fi
 
-            echo "⬆️ Uploading $file via GitHub API..."
+            echo "Uploading $file via GitHub API..."
             RESPONSE=$(curl -s -X PUT -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
               -d "{\"message\":\"Auto-update diagram: $FILENAME\", \"content\":\"$CONTENT\", \"branch\":\"$BRANCH_NAME\", \"sha\":\"$SHA\"}" \
               https://api.github.com/repos/${{ github.repository }}/contents/$file)
 
-            echo "📦 API response for $file:"
+            echo "API response for $file:"
             echo "$RESPONSE"
             echo ""
           done
+
