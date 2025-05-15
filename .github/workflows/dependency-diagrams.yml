@@ -59,10 +59,6 @@ jobs:
 
           for file in $FILES_CHANGED; do
             echo "Preparing to commit: $file"
-            if [ ! -f "$file" ]; then
-              echo "Skipped: $file does not exist."
-              continue
-            fi
 
             CONTENT=$(base64 -w 0 "$file")
             FILENAME=$(basename "$file")
@@ -79,10 +75,15 @@ jobs:
               echo "Updating existing file with SHA: $SHA"
             fi
 
+            # Use a temporary file for large payloads to avoid 'Argument list too long' errors
+            API_PAYLOAD=$(mktemp)
+            echo "{\"message\":\"Auto-update diagram: $FILENAME\", \"content\":\"$CONTENT\", \"branch\":\"$BRANCH_NAME\", \"sha\":\"$SHA\"}" > "$API_PAYLOAD"
+
             echo "Uploading $file via GitHub API..."
             RESPONSE=$(curl -s -X PUT -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -d "{\"message\":\"Auto-update diagram: $FILENAME\", \"content\":\"$CONTENT\", \"branch\":\"$BRANCH_NAME\", \"sha\":\"$SHA\"}" \
+              -d @"$API_PAYLOAD" \
               https://api.github.com/repos/${{ github.repository }}/contents/$file)
+            rm -f "$API_PAYLOAD"
 
             echo "API response for $file:"
             echo "$RESPONSE"
