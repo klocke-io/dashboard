@@ -42,3 +42,4 @@ jobs:
           fetch: true
           message: 'Commit from GitHub Actions (dependency-diagrams.yml) [skip ci]'
           pathspec_error_handling: 'exitAtEnd'
+          default_author: 'github_actions'
