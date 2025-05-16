@@ -36,57 +36,63 @@ jobs:
       - name: Generate dependency diagrams
         run: yarn generate-all-dependency-diagrams
 
-      - name: Commit updated diagrams via GitHub API
-        run: |
-          pwd
-          echo "Checking for changes in 'diagram/' directory..."
-          CHANGED=$(git status --porcelain diagram/)
-          echo "Git status output:"
-          echo "$CHANGED"
+      - name: Commit changes
+        uses: iarekylew00t/verified-bot-commit@29b641455ab27bc012ce6b3147e271d661b48a4a # v1.3.5
+        with:
+          message: 'Update dependency diagrams'
+          files: diagram/**
 
-          if [ -z "$CHANGED" ]; then
-            echo "No changes detected. Exiting."
-            exit 0
-          fi
-
-          echo "Changes detected. Starting to commit changed diagrams..."
-          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-          echo "Target branch: $BRANCH_NAME"
-
-          FILES_CHANGED=$(echo "$CHANGED" | awk '{print $2}')
-          echo "Files to commit:"
-          echo "$FILES_CHANGED"
-
-          for file in $FILES_CHANGED; do
-            echo "Preparing to commit: $file"
-
-            CONTENT=$(base64 -w 0 "$file")
-            FILENAME=$(basename "$file")
-
-            echo "Checking if file already exists in the repository..."
-            SHA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              https://api.github.com/repos/${{ github.repository }}/contents/$file?ref=$BRANCH_NAME \
-              | jq -r .sha)
-
-            if [ "$SHA" == "null" ]; then
-              echo "No existing file found. Will create new."
-              SHA=""
-            else
-              echo "Updating existing file with SHA: $SHA"
-            fi
-
-            # Use a temporary file for large payloads to avoid 'Argument list too long' errors
-            API_PAYLOAD=$(mktemp)
-            echo "{\"message\":\"Auto-update diagram: $FILENAME\", \"content\":\"$CONTENT\", \"branch\":\"$BRANCH_NAME\", \"sha\":\"$SHA\"}" > "$API_PAYLOAD"
-
-            echo "Uploading $file via GitHub API..."
-            RESPONSE=$(curl -s -X PUT -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              -d @"$API_PAYLOAD" \
-              https://api.github.com/repos/${{ github.repository }}/contents/$file)
-            rm -f "$API_PAYLOAD"
-
-            echo "API response for $file:"
-            echo "$RESPONSE"
-            echo ""
-          done
+      #- name: Commit updated diagrams via GitHub API
+      #  run: |
+      #    pwd
+      #    echo "Checking for changes in 'diagram/' directory..."
+      #    CHANGED=$(git status --porcelain diagram/)
+      #    echo "Git status output:"
+      #    echo "$CHANGED"
+#
+      #    if [ -z "$CHANGED" ]; then
+      #      echo "No changes detected. Exiting."
+      #      exit 0
+      #    fi
+#
+      #    echo "Changes detected. Starting to commit changed diagrams..."
+      #    BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+      #    echo "Target branch: $BRANCH_NAME"
+#
+      #    FILES_CHANGED=$(echo "$CHANGED" | awk '{print $2}')
+      #    echo "Files to commit:"
+      #    echo "$FILES_CHANGED"
+#
+      #    for file in $FILES_CHANGED; do
+      #      echo "Preparing to commit: $file"
+#
+      #      CONTENT=$(base64 -w 0 "$file")
+      #      FILENAME=$(basename "$file")
+#
+      #      echo "Checking if file already exists in the repository..."
+      #      SHA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      #        https://api.github.com/repos/${{ github.repository }}/contents/$file?ref=$BRANCH_NAME \
+      #        | jq -r .sha)
+#
+      #      if [ "$SHA" == "null" ]; then
+      #        echo "No existing file found. Will create new."
+      #        SHA=""
+      #      else
+      #        echo "Updating existing file with SHA: $SHA"
+      #      fi
+#
+      #      # Use a temporary file for large payloads to avoid 'Argument list too long' errors
+      #      API_PAYLOAD=$(mktemp)
+      #      echo "{\"message\":\"Auto-update diagram: $FILENAME\", \"content\":\"$CONTENT\", \"branch\":\"$BRANCH_NAME\", \"sha\":\"$SHA\"}" > "$API_PAYLOAD"
+#
+      #      echo "Uploading $file via GitHub API..."
+      #      RESPONSE=$(curl -s -X PUT -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      #        -d @"$API_PAYLOAD" \
+      #        https://api.github.com/repos/${{ github.repository }}/contents/$file)
+      #      rm -f "$API_PAYLOAD"
+#
+      #      echo "API response for $file:"
+      #      echo "$RESPONSE"
+      #      echo ""
+      #    done
 
