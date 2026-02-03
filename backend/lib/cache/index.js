@@ -76,7 +76,10 @@ export default {
   },
   getNamespacedCloudProfiles (namespace) {
     const items = cache.getNamespacedCloudProfiles()
-    return items.filter(item => item.metadata.namespace === namespace)
+    if (namespace) {
+      return items.filter(item => item.metadata.namespace === namespace)
+    }
+    return items
   },
   getQuotas () {
     return cache.getQuotas()

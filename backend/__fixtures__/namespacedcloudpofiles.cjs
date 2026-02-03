@@ -124,7 +124,7 @@ const namespacedCloudProfileList = [
   }),
 ]
 
-const namespacedCloudProfiles = {
+const namespacedcloudpofiles = {
   create (...args) {
     return getNamespacedCloudProfile(...args)
   },
@@ -141,4 +141,4 @@ const namespacedCloudProfiles = {
   reset () {},
 }
 
-module.exports = namespacedCloudProfiles
+module.exports = namespacedcloudpofiles

@@ -28,18 +28,182 @@ exports[`api namespaced cloudprofiles should return all namespaced cloudprofiles
 `;
 
 exports[`api namespaced cloudprofiles should return all namespaced cloudprofiles for a namespace 2`] = `
-{
-  "code": 500,
-  "details": {
-    "name": "TypeError",
-    "stack": "TypeError: Cannot read properties of undefined (reading 'list')
-    at [object Object]
-    at [object Object]
-    at [object Object]
-    at [object Object]",
+[
+  {
+    "metadata": {
+      "name": "custom-cloudprofile-1",
+      "namespace": "garden-local",
+      "uid": 1001,
+    },
+    "spec": {
+      "kubernetes": {
+        "versions": [
+          {
+            "expirationDate": "2025-02-28T23:59:59Z",
+            "version": "1.31.1",
+          },
+        ],
+      },
+      "machineTypes": [
+        {
+          "cpu": "4",
+          "gpu": "0",
+          "memory": "16Gi",
+          "name": "local-large",
+          "usable": true,
+        },
+      ],
+      "parent": {
+        "kind": "CloudProfile",
+        "name": "local",
+      },
+    },
+    "status": {
+      "cloudProfileSpec": {
+        "kubernetes": {
+          "versions": [
+            {
+              "expirationDate": "2025-02-28T23:59:59Z",
+              "version": "1.31.1",
+            },
+            {
+              "version": "1.30.8",
+            },
+            {
+              "version": "1.29.10",
+            },
+          ],
+        },
+        "machineImages": [
+          {
+            "name": "gardenlinux",
+            "versions": [
+              {
+                "version": "15.4.20220818",
+              },
+            ],
+          },
+        ],
+        "machineTypes": [
+          {
+            "cpu": "4",
+            "gpu": "0",
+            "memory": "16Gi",
+            "name": "local-large",
+            "usable": true,
+          },
+          {
+            "cpu": "2",
+            "gpu": "0",
+            "memory": "8Gi",
+            "name": "local-medium",
+            "usable": true,
+          },
+        ],
+        "regions": [
+          {
+            "name": "europe-central-1",
+            "zones": [
+              {
+                "name": "europe-central-1a",
+              },
+            ],
+          },
+        ],
+        "seedSelector": {},
+        "type": "local",
+      },
+    },
   },
-  "message": "Cannot read properties of undefined (reading 'list')",
-  "reason": "Internal Server Error",
-  "status": "Failure",
-}
+  {
+    "metadata": {
+      "name": "custom-cloudprofile-2",
+      "namespace": "garden-local",
+      "uid": 1002,
+    },
+    "spec": {
+      "kubernetes": {
+        "versions": [
+          {
+            "expirationDate": "2025-02-28T23:59:59Z",
+            "version": "1.31.1",
+          },
+        ],
+      },
+      "machineTypes": [
+        {
+          "cpu": "4",
+          "gpu": "0",
+          "memory": "16Gi",
+          "name": "infra1-large",
+          "usable": true,
+        },
+      ],
+      "parent": {
+        "kind": "CloudProfile",
+        "name": "infra1-profileName",
+      },
+    },
+    "status": {
+      "cloudProfileSpec": {
+        "kubernetes": {
+          "versions": [
+            {
+              "expirationDate": "2025-02-28T23:59:59Z",
+              "version": "1.31.1",
+            },
+            {
+              "version": "1.30.8",
+            },
+            {
+              "version": "1.29.10",
+            },
+          ],
+        },
+        "machineImages": [
+          {
+            "name": "gardenlinux",
+            "versions": [
+              {
+                "version": "15.4.20220818",
+              },
+            ],
+          },
+        ],
+        "machineTypes": [
+          {
+            "cpu": "4",
+            "gpu": "0",
+            "memory": "16Gi",
+            "name": "infra1-large",
+            "usable": true,
+          },
+          {
+            "cpu": "2",
+            "gpu": "0",
+            "memory": "8Gi",
+            "name": "infra1-medium",
+            "usable": true,
+          },
+        ],
+        "regions": [
+          {
+            "name": "europe-central-1",
+            "zones": [
+              {
+                "name": "europe-central-1a",
+              },
+            ],
+          },
+        ],
+        "seedSelector": {
+          "matchLabels": {
+            "env": "dev",
+          },
+        },
+        "type": "infra1",
+      },
+    },
+  },
+]
 `;

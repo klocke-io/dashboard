@@ -9,7 +9,7 @@ import services from '../services/index.js'
 import { metricsRoute } from '../middleware.js'
 const { namespacedCloudProfiles } = services
 
-const router = express.Router({ mergeParams: true })
+const router = express.Router()
 
 const metricsMiddleware = metricsRoute('namespacedcloudprofiles')
 
@@ -18,8 +18,7 @@ router.route('/')
   .get(async (req, res, next) => {
     try {
       const user = req.user
-      const namespace = req.params.namespace
-      res.send(await namespacedCloudProfiles.listForNamespace({ user, namespace }))
+      res.send(await namespacedCloudProfiles.listAllNamespacedCloudProfiles({ user }))
     } catch (err) {
       next(err)
     }

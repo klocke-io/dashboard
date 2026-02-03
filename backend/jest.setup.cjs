@@ -122,13 +122,14 @@ jest.mock('./dist/lib/cache/index.cjs', () => {
   const { cache } = originalCache
   const keys = [
     'cloudprofiles',
-    'namespacedCloudProfiles',
+    'namespacedcloudprofiles',
     'seeds',
     'quotas',
     'projects',
     'controllerregistrations',
     'resourcequotas',
   ]
+
   for (const key of keys) {
     cache.set(key, {
       items: fixtures[key].list(),
