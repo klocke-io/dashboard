@@ -18,7 +18,8 @@ router.route('/')
   .get(async (req, res, next) => {
     try {
       const user = req.user
-      res.send(await namespacedCloudProfiles.listAllNamespacedCloudProfiles({ user }))
+      const diff = req.query.diff === 'true'
+      res.send(await namespacedCloudProfiles.listAllNamespacedCloudProfiles({ user, diff }))
     } catch (err) {
       next(err)
     }

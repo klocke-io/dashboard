@@ -74,6 +74,13 @@ export default {
   getCloudProfiles () {
     return cache.getCloudProfiles()
   },
+  getCloudProfile (name) {
+    return _
+      .chain(cache.getCloudProfiles())
+      .find(['metadata.name', name])
+      .cloneDeep()
+      .value()
+  },
   getNamespacedCloudProfiles (namespace) {
     const items = cache.getNamespacedCloudProfiles()
     if (namespace) {

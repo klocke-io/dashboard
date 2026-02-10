@@ -19,7 +19,8 @@ router.route('/')
     try {
       const user = req.user
       const namespace = req.params.namespace
-      res.send(await namespacedCloudProfiles.listForNamespace({ user, namespace }))
+      const diff = req.query.diff === 'true'
+      res.send(await namespacedCloudProfiles.listForNamespace({ user, namespace, diff }))
     } catch (err) {
       next(err)
     }
