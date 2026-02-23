@@ -15,6 +15,7 @@ module.exports = {
   testEnvironment: 'node',
   testPathIgnorePatterns: [
     '/test-ignore/',
+    '\\.spec\\.js$',
   ],
   transformIgnorePatterns: [
     '/node_modules/',
@@ -40,5 +41,6 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^\\.{2}/markdown(\\.cjs)?$': '<rootDir>/__mocks__/@gardener-dashboard/markdown.cjs',
+    '^jsondiffpatch$': '<rootDir>/__mocks__/jsondiffpatch.cjs',
   },
 }
