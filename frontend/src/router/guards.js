@@ -216,9 +216,14 @@ async function refreshRules (store, ...args) {
 }
 
 function ensureCloudProfilesLoaded (store) {
+  const promises = []
   if (store.isInitial) {
-    return store.fetchCloudProfiles()
+    promises.push(store.fetchCloudProfiles())
   }
+  if (store.isNamespacedInitial) {
+    promises.push(store.fetchNamespacedCloudProfiles())
+  }
+  return Promise.all(promises)
 }
 
 function ensureSeedsLoaded (store) {
