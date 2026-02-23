@@ -12,6 +12,7 @@ import {
   ref,
   computed,
 } from 'vue'
+import { patch as jsondiffpatchPatch } from 'jsondiffpatch'
 
 import { useConfigStore } from '@/store/config'
 
@@ -19,6 +20,7 @@ import { useApi } from '@/composables/useApi'
 
 import { getCloudProfileSpec } from '@/utils'
 
+import cloneDeep from 'lodash/cloneDeep'
 import filter from 'lodash/filter'
 import sortBy from 'lodash/sortBy'
 import uniq from 'lodash/uniq'
@@ -67,8 +69,35 @@ export const useCloudProfileStore = defineStore('cloudProfile', () => {
     list.value = cloudProfiles
   }
 
+  function rehydrateNamespacedProfiles (profiles) {
+    if (!profiles) {
+      return profiles
+    }
+    return profiles.map(profile => {
+      const { cloudProfileSpecDiff } = profile.status ?? {}
+      if (!('cloudProfileSpecDiff' in (profile.status ?? {}))) {
+        // Already has cloudProfileSpec (non-diff response) — pass through unchanged
+        return profile
+      }
+      const parentName = profile.spec?.parent?.name
+      const parent = find(list.value, ['metadata.name', parentName])
+      if (!parent) {
+        return profile
+      }
+      if (cloudProfileSpecDiff === null) {
+        // No changes from parent — spec is identical
+        profile.status.cloudProfileSpec = cloneDeep(parent.spec)
+      } else {
+        // Apply delta on top of parent spec
+        profile.status.cloudProfileSpec = jsondiffpatchPatch(cloneDeep(parent.spec), cloudProfileSpecDiff)
+      }
+      delete profile.status.cloudProfileSpecDiff
+      return profile
+    })
+  }
+
   function setNamespacedCloudProfiles (namespacedCloudProfiles) {
-    namespacedList.value = namespacedCloudProfiles
+    namespacedList.value = rehydrateNamespacedProfiles(namespacedCloudProfiles)
   }
 
   const infraProviderTypesList = computed(() => {

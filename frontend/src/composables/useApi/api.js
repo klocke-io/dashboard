@@ -238,11 +238,11 @@ export function getCloudProfiles () {
 
 export function getNamespacedCloudProfiles ({ namespace }) {
   namespace = encodeURIComponent(namespace)
-  return getResource(`/api/namespaces/${namespace}/namespacedcloudprofiles`)
+  return getResource(`/api/namespaces/${namespace}/namespacedcloudprofiles?diff=true`)
 }
 
 export function getAllNamespacedCloudProfiles () {
-  return getResource('/api/namespacedcloudprofiles')
+  return getResource('/api/namespacedcloudprofiles?diff=true')
 }
 
 /* Seeds */

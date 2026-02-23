@@ -1816,6 +1816,7 @@ const RAW_RUNTIME_STATE =
           ["js-cookie", "npm:3.0.5"],\
           ["js-yaml", "npm:4.1.1"],\
           ["jsdom", "virtual:8d919ffb8fd728f827df3f6a566e8e923223ffcec68f7450d83bbbc2dc25d6b8c987e111cbab484b209f253bdf2f2e00663b01a986262c44511128466462a76f#npm:26.1.0"],\
+          ["jsondiffpatch", "npm:0.7.3"],\
           ["jwt-decode", "npm:4.0.0"],\
           ["lodash", "npm:4.17.23"],\
           ["md5", "npm:2.3.0"],\
