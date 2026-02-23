@@ -11,6 +11,8 @@ import {
 
 import { useRegions } from './useRegions.js'
 
+import { getCloudProfileSpec } from '@/utils'
+
 import get from 'lodash/get'
 import filter from 'lodash/filter'
 import includes from 'lodash/includes'
@@ -34,7 +36,7 @@ export function useVolumeTypes (cloudProfile) {
    * Get all volume types from cloud profile
    */
   const volumeTypes = computed(() => {
-    return get(cloudProfile.value, ['spec', 'volumeTypes'], [])
+    return get(getCloudProfileSpec(cloudProfile.value), ['volumeTypes'], [])
   })
 
   /**
@@ -58,7 +60,7 @@ export function useVolumeTypes (cloudProfile) {
         return items
       }
 
-      const regions = get(cloudProfile.value, ['spec', 'regions'], [])
+      const regions = get(getCloudProfileSpec(cloudProfile.value), ['regions'], [])
       const regionObject = find(regions, { name: region.value })
       let regionZones = get(regionObject, ['zones'], [])
       regionZones = filter(regionZones, regionZone => includes(zones.value, regionZone.name))
