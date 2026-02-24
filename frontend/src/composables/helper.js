@@ -4,7 +4,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import { getDateFormatted, getCloudProfileSpec } from '@/utils'
+import {
+  getDateFormatted,
+  getCloudProfileSpec,
+} from '@/utils'
 
 import set from 'lodash/set'
 import isEmpty from 'lodash/isEmpty'

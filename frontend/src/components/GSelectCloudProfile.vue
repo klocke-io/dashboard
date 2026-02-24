@@ -18,9 +18,9 @@ SPDX-License-Identifier: Apache-2.0
     persistent-hint
     @blur="v$.selectedValue.$touch()"
   >
-    <template #item="{ item, props }">
+    <template #item="{ item, props: itemProps }">
       <v-list-item
-        v-bind="props"
+        v-bind="itemProps"
         :title="undefined"
       >
         <span>{{ item.raw.title }}</span>
@@ -101,8 +101,7 @@ const emit = defineEmits([
 
 const selectItems = computed(() => {
   return cloudProfiles.value.map(profile => {
-    const namespaced = profile.metadata.kind === 'NamespacedCloudProfile' ||
-      profile.kind === 'NamespacedCloudProfile'
+    const namespaced = profile.kind === 'NamespacedCloudProfile'
     const ref = {
       name: profile.metadata.name,
       kind: namespaced ? 'NamespacedCloudProfile' : 'CloudProfile',

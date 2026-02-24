@@ -100,10 +100,12 @@ export const useCloudProfileStore = defineStore('cloudProfile', () => {
     namespacedList.value = rehydrateNamespacedProfiles(namespacedCloudProfiles)
   }
 
+  const allCloudProfiles = computed(() => {
+    return [...(list.value ?? []), ...(namespacedList.value ?? [])]
+  })
+
   const infraProviderTypesList = computed(() => {
-    const regularTypes = map(list.value, 'spec.type')
-    const namespacedTypes = map(namespacedList.value ?? [], profile => getCloudProfileSpec(profile).type)
-    return uniq([...regularTypes, ...namespacedTypes])
+    return uniq(map(allCloudProfiles.value, profile => getCloudProfileSpec(profile).type))
   })
 
   const sortedInfraProviderTypeList = computed(() => {
@@ -113,11 +115,12 @@ export const useCloudProfileStore = defineStore('cloudProfile', () => {
   })
 
   function cloudProfilesByProviderType (providerType) {
-    const regularProfiles = filter(list.value, item => item.spec.type === providerType)
-    const namespacedProfiles = filter(namespacedList.value ?? [], item =>
-      getCloudProfileSpec(item).type === providerType,
+    return sortBy(
+      filter(allCloudProfiles.value, profile =>
+        getCloudProfileSpec(profile).type === providerType,
+      ),
+      'metadata.name',
     )
-    return sortBy([...regularProfiles, ...namespacedProfiles], 'metadata.name')
   }
 
   /**

@@ -20,7 +20,10 @@ import {
 } from '@/composables/helper.js'
 import { useLogger } from '@/composables/useLogger.js'
 
-import { normalizeVersion, getCloudProfileSpec } from '@/utils/index.js'
+import {
+  normalizeVersion,
+  getCloudProfileSpec,
+} from '@/utils/index.js'
 
 import filter from 'lodash/filter'
 import map from 'lodash/map'

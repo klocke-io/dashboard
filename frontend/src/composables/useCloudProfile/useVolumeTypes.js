@@ -9,9 +9,9 @@ import {
   isRef,
 } from 'vue'
 
-import { useRegions } from './useRegions.js'
-
 import { getCloudProfileSpec } from '@/utils'
+
+import { useRegions } from './useRegions.js'
 
 import get from 'lodash/get'
 import filter from 'lodash/filter'

@@ -4,9 +4,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+// eslint-disable-next-line import/no-unresolved
 import { defineConfig } from 'vitest/config'
 import { fileURLToPath } from 'url'
-import { resolve, dirname } from 'path'
+import {
+  resolve,
+  dirname,
+} from 'path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 

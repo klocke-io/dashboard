@@ -11,7 +11,7 @@ const { namespacedCloudProfiles } = services
 
 const router = express.Router()
 
-const metricsMiddleware = metricsRoute('namespacedcloudprofiles')
+const metricsMiddleware = metricsRoute('allnamespacedcloudprofiles')
 
 router.route('/')
   .all(metricsMiddleware)

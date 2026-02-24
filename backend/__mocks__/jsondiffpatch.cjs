@@ -7,9 +7,6 @@
 // CJS wrapper for the ESM-only jsondiffpatch package.
 // Only the `diff` export is used by the backend.
 
-const { createRequire } = require('module')
-const path = require('path')
-
 // jsondiffpatch ships only ESM. This wrapper is needed so that Jest (which
 // loads the compiled CJS dist) can resolve the package without triggering
 // "Must use import to load ES Module".
