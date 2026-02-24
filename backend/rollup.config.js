@@ -6,7 +6,6 @@
 
 import json from '@rollup/plugin-json'
 import commonjs from '@rollup/plugin-commonjs'
-import { nodeResolve } from '@rollup/plugin-node-resolve'
 import copy from 'rollup-plugin-copy'
 import { fileURLToPath } from 'url'
 import {
@@ -32,7 +31,6 @@ export default [
       },
     },
     plugins: [
-      nodeResolve({ resolveOnly: ['jsondiffpatch'] }),
       json(),
       commonjs(),
       copy({

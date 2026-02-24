@@ -13,10 +13,6 @@ module.exports = {
     'dist/**/*.cjs',
   ],
   testEnvironment: 'node',
-  testPathIgnorePatterns: [
-    '/test-ignore/',
-    '\\.spec\\.js$',
-  ],
   transformIgnorePatterns: [
     '/node_modules/',
     '\\.pnp\\.[^\\/]+$',
@@ -34,9 +30,7 @@ module.exports = {
     '<rootDir>/jest.setup.cjs',
   ],
   testMatch: [
-    '**/__tests__/**/*.js',
     '**/__tests__/**/*.cjs',
-    '**/?(*.)+(spec|test).js',
     '**/?(*.)+(spec|test).cjs',
   ],
   moduleNameMapper: {
