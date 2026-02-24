@@ -234,6 +234,17 @@ export function getCloudProfiles () {
   return getResource('/api/cloudprofiles')
 }
 
+/* Namespaced Cloud Profiles */
+
+export function getNamespacedCloudProfiles ({ namespace }) {
+  namespace = encodeURIComponent(namespace)
+  return getResource(`/api/namespaces/${namespace}/namespacedcloudprofiles?diff=true`)
+}
+
+export function getAllNamespacedCloudProfiles () {
+  return getResource('/api/namespacedcloudprofiles?diff=true')
+}
+
 /* Seeds */
 
 export function getSeeds () {
@@ -436,6 +447,8 @@ export default {
   updateShootSeedName,
   createShootAdminKubeconfig,
   getCloudProfiles,
+  getNamespacedCloudProfiles,
+  getAllNamespacedCloudProfiles,
   getSeeds,
   getProjects,
   createProject,

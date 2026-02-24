@@ -215,9 +215,12 @@ async function refreshRules (store, ...args) {
   return store.fetchRules(...args)
 }
 
-function ensureCloudProfilesLoaded (store) {
+async function ensureCloudProfilesLoaded (store) {
   if (store.isInitial) {
-    return store.fetchCloudProfiles()
+    await store.fetchCloudProfiles()
+  }
+  if (store.isNamespacedInitial) {
+    await store.fetchNamespacedCloudProfiles()
   }
 }
 
