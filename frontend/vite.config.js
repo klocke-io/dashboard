@@ -56,14 +56,16 @@ export default defineConfig(({ command, mode }) => {
     }
   }
 
-  const VITE_BASE_URL = '/'
+  const VITE_BASE_URL = process.env.VITE_BASE_URL ?? '/'
   const VITE_APP_TITLE = 'Gardener Dashboard'
+  const VITE_DEMO = process.env.VITE_DEMO === 'true' || mode === 'demo' ? 'true' : 'false'
 
   Object.assign(process.env, {
     MODE,
     VITE_APP_TITLE,
     VITE_APP_VERSION,
     VITE_BASE_URL,
+    VITE_DEMO,
   })
 
   const manualChunks = {
@@ -141,16 +143,21 @@ export default defineConfig(({ command, mode }) => {
       __TEST__: mode === 'test',
       __VUE_OPTIONS_API__: true,
       __VUE_PROD_DEVTOOLS__: false,
+      'import.meta.env.VITE_DEMO': JSON.stringify(VITE_DEMO),
       'process.env': {
         MODE,
         VITE_APP_TITLE,
         VITE_APP_VERSION,
         VITE_BASE_URL,
+        VITE_DEMO,
       },
     },
     resolve: {
       alias: {
         '@': resolve('./src'),
+        ...(VITE_DEMO === 'true'
+          ? { 'socket.io-client': resolve('./src/demo/socket-stub.js') }
+          : {}),
       },
       extensions: [
         '.js',
@@ -177,14 +184,20 @@ export default defineConfig(({ command, mode }) => {
   if (command === 'serve') {
     const keyPath = resolve('./ssl/key.pem')
     const certPath = resolve('./ssl/cert.pem')
-    const https = existsSync(keyPath) && existsSync(certPath)
+    const httpsAvailable = existsSync(keyPath) && existsSync(certPath)
+    let https = httpsAvailable
       ? {
           key: readFileSync(keyPath),
           cert: readFileSync(certPath),
         }
       : true
 
-    if (https === true && mode === 'development') {
+    if (VITE_DEMO === 'true') {
+      // Demo mode: serve over plain HTTP so Chrome doesn't block on a
+      // self-signed cert. The fetch-mock installs a document.cookie shim
+      // so the __Host-gHdrPyl auth cookie is satisfied without HTTPS.
+      https = false
+    } else if (https === true && mode === 'development') {
       // eslint-disable-next-line no-console
       console.warn(YELLOW + 'WARNING:' + RESET + ' SSL key and certificate files are missing. We recommend running ' + WHITE_BLACK + 'yarn setup' + RESET + ' to generate certificate files and add the CA to the keychain.')
       config.plugins.push(basicSsl({
@@ -197,7 +210,9 @@ export default defineConfig(({ command, mode }) => {
       port: 8443,
       strictPort: true,
       https,
-      proxy: {
+    }
+    if (VITE_DEMO !== 'true') {
+      config.server.proxy = {
         '/api': {
           target: proxyTarget,
           changeOrigin: true,
@@ -206,7 +221,7 @@ export default defineConfig(({ command, mode }) => {
         '/auth': {
           target: proxyTarget,
         },
-      },
+      }
     }
   }
 

@@ -1,0 +1,68 @@
+name: Deploy Demo to GitHub Pages
+
+on:
+  push:
+    branches:
+      - demo-pages
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read Node.js version from package.json
+        id: node
+        run: echo "version=$(node -p "require('./package.json').engines.node")" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.node.outputs.version }}
+
+      - name: Enable corepack
+        run: |
+          corepack enable
+          corepack prepare --activate
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build demo
+        working-directory: frontend
+        env:
+          VITE_BASE_URL: /dashboard/
+        run: yarn build:demo
+
+      - name: SPA fallback (404.html)
+        run: cp frontend/dist/index.html frontend/dist/404.html
+
+      - name: Disable Jekyll
+        run: touch frontend/dist/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

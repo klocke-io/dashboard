@@ -11,9 +11,10 @@ import { registerPlugins } from '@/plugins'
 
 import App from './App.vue'
 
-// Composables
-
-// Plugins
+// Demo mode: install fetch mock + auth cookie before mount
+if (import.meta.env.VITE_DEMO === 'true') {
+  await import('./demo/bootstrap.js')
+}
 
 const app = createApp(App)
 
