@@ -45,6 +45,11 @@ jobs:
           VITE_BASE_URL: /dashboard/
         run: yarn build:demo
 
+      - name: Rewrite hardcoded /static/assets paths to base
+        run: |
+          grep -rlF '/static/assets/' frontend/dist/assets/ frontend/dist/index.html \
+            | xargs sed -i 's|/static/assets/|/dashboard/static/assets/|g'
+
       - name: SPA fallback (404.html)
         run: cp frontend/dist/index.html frontend/dist/404.html
 
